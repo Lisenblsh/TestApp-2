@@ -5,10 +5,11 @@ import androidx.recyclerview.widget.DiffUtil
 import com.lis.adapter.base.BasePagingAdapter
 import com.lis.domain.models.CompanyListModelItem
 import com.lis.domain.tools.ImageLoader
+import com.lis.domain.tools.addUrlToPath
 import com.lis.testapp2.databinding.CompanyItemBinding
 
 class CompanyPagingAdapter(
-    private val idLayout: Int
+    idLayout: Int
 ) : BasePagingAdapter<CompanyListModelItem, CompanyPagingAdapter.CompanyPagingViewHolder>(
     idLayout,
     COMPANY_COMPARISON
@@ -24,10 +25,7 @@ class CompanyPagingAdapter(
         override fun showData(item: Any) {
             if (item is CompanyListModelItem) {
                 binding.companyTitle.text = item.name
-                ImageLoader().setImage(
-                    binding.companyImage,
-                    "https://lifehack.studio/test_task/${item.img}"
-                )
+                ImageLoader().setImage(binding.companyImage, item.img.addUrlToPath())
                 binding.root.setOnClickListener {
                     clickListener.onItemClick(item.id)
                 }

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <style name="Base.V23.Night.Theme.Lis" parent="Base.V21.Night.Theme.Lis">
-        <item name="android:windowLightStatusBar">false</item>
-    </style>
-
-    <style name="Base.Theme.Lis" parent="Base.V23.Night.Theme.Lis"/>
-</resources>

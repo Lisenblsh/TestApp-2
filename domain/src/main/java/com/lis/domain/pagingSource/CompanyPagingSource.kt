@@ -3,7 +3,6 @@ package com.lis.domain.pagingSource
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.lis.domain.converters.ResponseToModel
-import com.lis.domain.models.CompanyListModel
 import com.lis.domain.models.CompanyListModelItem
 
 class CompanyPagingSource(private val responseToModel: ResponseToModel) :

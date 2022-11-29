@@ -72,7 +72,8 @@
                 android:textSize="15sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_web"
-                tools:text="@tools:sample/lorem/random" />
+                tools:text="@tools:sample/lorem/random"
+                android:layout_marginBottom="40dp"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -5,7 +5,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.lis.domain.converters.ResponseToModel
-import com.lis.domain.models.CompanyListModel
 import com.lis.domain.models.CompanyListModelItem
 import com.lis.domain.pagingSource.CompanyPagingSource
 import kotlinx.coroutines.flow.Flow

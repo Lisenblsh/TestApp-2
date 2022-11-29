@@ -1,6 +1,6 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
-    <style name="Base.V21.Theme.Lis" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Base.V24.Theme.Lis" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryVariant">@color/white</item>
         <item name="colorOnPrimary">@color/black</item>
@@ -9,14 +9,15 @@
         <item name="colorSecondaryVariant">@color/orange</item>
         <item name="colorOnSecondary">@color/white</item>
         <!-- Status bar color. -->
-        <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:fitsSystemWindows">true</item>
+        <item name="android:statusBarColor">?android:windowBackground</item>
+        <item name="android:windowLightStatusBar">true</item>
 
         <item name="android:textViewStyle">@style/Base.TextAppearance.Lis</item>
     </style>
 
-    <style name="Base.Theme.Lis" parent="Base.V21.Theme.Lis"/>
+    <style name="Base.Theme.Lis" parent="Base.V24.Theme.Lis"/>
 
     <style name="Theme.Lis"  parent="Base.Theme.Lis"/>
 </resources>

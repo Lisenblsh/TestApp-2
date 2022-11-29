@@ -1,21 +1,20 @@
 package com.lis.testapp2.presentation.fragments
 
 import android.content.Intent
-import android.location.Address
 import android.location.Geocoder
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.lis.domain.tools.ImageLoader
+import com.lis.domain.tools.addUrlToPath
 import com.lis.testapp2.databinding.FragmentCompanyBinding
 import com.lis.testapp2.presentation.viewModels.CompanyViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
-
 
 class CompanyFragment : Fragment() {
 
@@ -23,10 +22,12 @@ class CompanyFragment : Fragment() {
 
     private val viewModel by viewModel<CompanyViewModel>()
 
+    private var id: String? = null
+
     override fun onStart() {
         val args = CompanyFragmentArgs.fromBundle(requireArguments())
-        viewModel.getCompany(args.id)
-
+        id = args.id
+        viewModel.getCompany(id!!)
         super.onStart()
     }
 
@@ -37,44 +38,60 @@ class CompanyFragment : Fragment() {
     ): View {
         binding = FragmentCompanyBinding.inflate(inflater, container, false)
         binding.viewCompany()
+        viewError()
+        binding.bindSwipeRefresh()
         return binding.root
+    }
+
+    private fun FragmentCompanyBinding.bindSwipeRefresh() {
+        root.setOnRefreshListener {
+            if (id != null) {
+                viewModel.getCompany(id!!)
+            }
+            root.isRefreshing = false
+        }
     }
 
     private fun FragmentCompanyBinding.viewCompany() {
         viewModel.companyData.observe(viewLifecycleOwner) { company ->
-            Log.e("company","$company")
-            ImageLoader().setImage(companyImage,"https://lifehack.studio/test_task/${company.img}")
-            companyName.text= company.name
+            ImageLoader().setImage(companyImage, company.img.addUrlToPath())
+            companyName.text = company.name
             companyPhone.text = company.phone
             companyWeb.text = company.www
             companyDescription.text = company.description
 
-            val addresses: List<Address>
+            val (address, visible) = getAddress(company.lat, company.lon)
+            companyAddress.text = address
+            if (visible) {
+                companyAddress.setOnClickListener {
+                    openMap(company.lat, company.lon)
+                }
+            }
+        }
+    }
+
+    private fun viewError() {
+        viewModel.error.observe(viewLifecycleOwner) {
+            Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun openMap(lat: Double, lon: Double) {
+        val uri =
+            java.lang.String.format(Locale.ENGLISH, "geo:%f,%f", lat, lon)
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
+        requireContext().startActivity(intent)
+    }
+
+    private fun getAddress(lat: Double, lon: Double): Pair<String, Boolean> {
+        return if (lat != 0.0 && lon != 0.0) {
             val geocoder = Geocoder(requireContext(), Locale.getDefault())
 
-            addresses = geocoder.getFromLocation(
-                company.lat,
-                company.lon,
-                1
-            ) // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+            val geoCoderAddresses = geocoder.getFromLocation(lat, lon, 1)
 
-            val address: String =
-                addresses[0].getAddressLine(0) // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            val address = geoCoderAddresses[0].getAddressLine(0)
+            Pair(address, true)
+        } else Pair("", false)
 
-            val city: String = addresses[0].locality
-            val state: String = addresses[0].adminArea
-            val country: String = addresses[0].countryName
-            val postalCode: String = addresses[0].postalCode
-            val knownName: String =
-                addresses[0].featureName // Only if available else return NULL
-
-            companyAddress.text = address
-            companyAddress.setOnClickListener {
-                val uri = java.lang.String.format(Locale.ENGLISH, "geo:%f,%f", company.lat, company.lon)
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
-                requireContext().startActivity(intent)
-            }
-
-        }
     }
 }
